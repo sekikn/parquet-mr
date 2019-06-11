@@ -25,6 +25,7 @@ import com.beust.jcommander.Parameters;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import java.util.List;
+import java.util.Optional;
 
 @Parameters(commandDescription = "Retrieves details on the functions of other commands")
 public class Help implements Command {
@@ -111,11 +112,16 @@ public class Help implements Command {
       console.info("    {}\n\t{}",
           command, jc.getCommandDescription(command));
     }
-    console.info("\n  Examples:");
-    console.info("\n    # print information for create\n    {} help create",
-        programName);
-    console.info("\n  See '{} help <command>' for more information on a " +
+
+    Optional<String> optional = jc.getCommands().keySet().stream().filter(s -> !s.equals("help")).findFirst();
+    if (optional.isPresent()) {
+      String command = optional.get();
+      console.info("\n  Examples:");
+      console.info("\n    # print information for {}\n    {} help {}",
+        command, programName, command);
+      console.info("\n  See '{} help <command>' for more information on a " +
         "specific command.", programName);
+    }
   }
 
   private boolean printOption(Logger console, ParameterDescription param) {
