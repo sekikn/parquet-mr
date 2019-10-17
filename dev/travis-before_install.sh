@@ -19,7 +19,7 @@
 # This script gets invoked by .travis.yml in the before_install step
 ################################################################################
 
-export THIFT_VERSION=0.12.0
+export THIFT_VERSION=0.13.0
 
 set -e
 date
