@@ -1,0 +1,59 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+name: Test-ARM64
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        codec: [ 'uncompressed', 'gzip', 'snappy' ]
+    name: Build Parquet with JDK 11 and ${{ matrix.codec }}
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: qemu-user-static
+        run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+      - name: arm64v8
+        run: |
+          docker run --rm -i -e CI_TARGET_BRANCH=$GITHUB_HEAD_REF -v $HOME/.m2:/root/.m2 -v $PWD:/ws -w /ws arm64v8/ubuntu:focal bash <<EOF
+          set -xe
+          lscpu
+          apt-get update -qq
+          apt-get install -qq maven openjdk-11-jdk sudo wget &&
+          dev/ci-before_install.sh &&
+          java -version &&
+          mvn -version &&
+          mvn install --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -Dsource.skip=true -Djava.version=11 &&
+          TEST_CODECS=${{ matrix.codec }} mvn verify --batch-mode javadoc:javadoc -Pci-test,default
+          EOF
