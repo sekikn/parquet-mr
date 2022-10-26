@@ -55,5 +55,5 @@ jobs:
           java -version &&
           mvn -version &&
           mvn install --batch-mode -DskipTests=true -Dmaven.javadoc.skip=true -Dsource.skip=true -Djava.version=11 &&
-          TEST_CODECS=${{ matrix.codec }} mvn verify --batch-mode javadoc:javadoc -Pci-test,default
+          TEST_CODECS=${{ matrix.codec }} mvn verify --batch-mode javadoc:javadoc -Pci-test
           EOF
