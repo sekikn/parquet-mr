@@ -34,6 +34,7 @@ jobs:
           path: compiler/cpp/thrift
 
   build:
+    needs: build_thrift_compiler
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
