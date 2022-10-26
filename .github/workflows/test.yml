@@ -31,7 +31,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: thrift-compiler
-          path: compiler/cpp/thrift
+          path: /usr/local/bin/thrift
 
   build:
     needs: build_thrift_compiler

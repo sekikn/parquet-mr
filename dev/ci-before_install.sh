@@ -34,4 +34,4 @@ wget -qO- https://archive.apache.org/dist/thrift/$THRIFT_VERSION/thrift-$THRIFT_
 cd thrift-${THRIFT_VERSION}
 chmod +x ./configure
 ./configure --disable-libs
-make
+sudo make install
