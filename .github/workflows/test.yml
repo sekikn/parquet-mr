@@ -26,7 +26,7 @@ jobs:
     env:
       THRIFT_VERSION: 0.16.0
     steps:
-      - name: Download thrift compiler
+      - name: Download thrift
         run: curl -sLO https://archive.apache.org/dist/thrift/$THRIFT_VERSION/thrift-$THRIFT_VERSION.tar.gz
       - uses: actions/cache@v3
         id: cache-thrift
