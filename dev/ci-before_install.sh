@@ -35,10 +35,3 @@ cd thrift-${THRIFT_VERSION}
 chmod +x ./configure
 ./configure --disable-libs
 sudo make install
-cd ..
-branch_specific_script="dev/ci-before_install-${CI_TARGET_BRANCH}.sh"
-if [[ -e "$branch_specific_script" ]]
-then
-  . "$branch_specific_script"
-fi
-date
